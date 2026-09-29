@@ -1,0 +1,155 @@
+# ==============================================================================
+# Git Ignore for BandsmithV2
+# Signal Processing, RF Parameter Extraction & Web Dashboard
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Python & Virtual Environments
+# ------------------------------------------------------------------------------
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Unit tests and coverage
+.pytest_cache/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+htmlcov/
+.tox/
+.nox/
+
+# Type checking & linting
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# ------------------------------------------------------------------------------
+# Node.js & Frontend (Vite / React)
+# ------------------------------------------------------------------------------
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+dist-ssr/
+
+# Frontend logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ------------------------------------------------------------------------------
+# Environment Variables & Secrets
+# ------------------------------------------------------------------------------
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+!*.env.example
+
+# ------------------------------------------------------------------------------
+# Data & Raw Signal Recordings
+# ------------------------------------------------------------------------------
+# Ignore raw SDR captures and recordings (.wav, .iq, etc.), preserve folder via .gitkeep
+/data/raw/*
+!/data/raw/.gitkeep
+
+# (Optional) Uncomment below if you generate large synthetic test signals locally
+# and prefer not to commit them to git:
+# /data/synthetic/*.wav
+# /data/synthetic/*.iq
+# /data/synthetic/*.npy
+# /data/synthetic/*.npz
+
+# ------------------------------------------------------------------------------
+# Generated Diagnostic Plots & Output Artifacts
+# ------------------------------------------------------------------------------
+*_check.png
+waterfall_check.png
+costas_check.png
+costas_noisy_check.png
+psd_check.png
+*.log
+
+# Temp & scratch directories
+tmp/
+temp/
+scratch/
+
+# ------------------------------------------------------------------------------
+# Operating System & IDEs
+# ------------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDE / Editor configuration
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swo
+*.swp
+*~
+*.sublime-project
+*.sublime-workspace
+
+# VS Code (preserve recommended extensions if present)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
