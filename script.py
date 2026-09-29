@@ -3,7 +3,7 @@ from src.features.modulation import classify_modulation, instantaneous_features
 from src.features.spectral import compute_psd, estimate_bandwidth, estimate_snr
 import numpy as np
 
-files = ["test_fsk.wav", "test_fsk_snr20.wav", "test_fsk_snr10.wav", "test_fsk_snr0.wav"]
+files = ["test_bpsk.wav", "test_bpsk_snr20.wav", "test_bpsk_snr10.wav", "test_bpsk_snr0.wav"]
 
 for fname in files:
     iq, fs = load_wav(f"data/synthetic/{fname}")

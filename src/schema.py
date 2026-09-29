@@ -57,6 +57,10 @@ def build_bucket1_report(iq: np.ndarray, fs: int) -> dict:
     # SNR: auto-detect signal band from the PSD (no manual band required)
     snr_db = estimate_snr(freqs, psd)  # uses per-bin threshold auto-detect
 
+    bw_effective = max(float(bandwidth_hz), 1.0)
+    bw_correction_db = float(10.0 * np.log10(fs / bw_effective))
+    snr_full_band_db = float(snr_db - bw_correction_db) if np.isfinite(snr_db) else None
+
     # ── Modulation classification (Week 3) ───────────────────────────────
     mod_result = classify_modulation(iq_clean, fs)
     
@@ -73,7 +77,8 @@ def build_bucket1_report(iq: np.ndarray, fs: int) -> dict:
         "rf": {
             "sampling_rate_hz": fs,
             "bandwidth_hz": round(bandwidth_hz, 2),
-            "snr_db": round(snr_db, 2),
+            "snr_db": round(snr_db, 2) if np.isfinite(snr_db) else None,
+            "snr_full_band_db": round(snr_full_band_db, 2) if (snr_full_band_db is not None and np.isfinite(snr_full_band_db)) else None,
         },
         "modulation": {
             "type": mod_result["type"],

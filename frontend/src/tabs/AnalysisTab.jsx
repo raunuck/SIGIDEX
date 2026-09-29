@@ -49,6 +49,22 @@ export default function AnalysisTab({ fileId, fecData, onAnalysisLoaded }) {
   const sampleRate = analysis?.sample_rate || 44100;
   const hopMs = ((hopSamples / sampleRate) * 1000).toFixed(1);
 
+  // Dual-display SNR calculation
+  const inBandSnr = rf.snr_db;
+  const isNoisySignal = inBandSnr !== undefined && inBandSnr !== null && inBandSnr < 15.0;
+  let fullBandDisplay = '-- dB';
+  if (inBandSnr !== undefined && inBandSnr !== null) {
+    if (isNoisySignal) {
+      const fullBandVal =
+        rf.snr_full_band_db !== undefined && rf.snr_full_band_db !== null
+          ? rf.snr_full_band_db
+          : inBandSnr - 10 * Math.log10((rf.sampling_rate_hz || sampleRate || 44100) / Math.max(rf.bandwidth_hz || 1, 1));
+      fullBandDisplay = `${fullBandVal.toFixed(1)} dB`;
+    } else {
+      fullBandDisplay = 'high/clean, exact value not meaningful';
+    }
+  }
+
   // FEC information: use passed fecData or server-cached analysis.fec
   const activeFec = fecData || analysis?.fec;
   const fecRan = !!activeFec;
@@ -151,26 +167,57 @@ export default function AnalysisTab({ fileId, fecData, onAnalysisLoaded }) {
               </span>
             </div>
 
-            {/* Renamed to "SNR (IN-BAND)" with descriptive tooltip */}
-            <div className="flex items-center justify-between">
+            {/* Primary: SNR (IN-BAND) */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#2A2A2E]/40">
               <div className="flex items-center space-x-1.5 group cursor-help">
                 <span
                   className="text-xs font-mono font-bold text-[#8E8E93] uppercase underline decoration-dotted decoration-[#8E8E93]/60"
-                  title="signal vs noise floor within the signal bandwidth; not directly comparable to full-band SNR"
+                  title="Signal vs noise floor within occupied bandwidth; peak spectral clearance."
                 >
                   SNR (IN-BAND)
                 </span>
                 <HelpCircle
                   className="w-3.5 h-3.5 text-[#8E8E93]/60 group-hover:text-[#F5A623] transition-colors"
-                  title="signal vs noise floor within the signal bandwidth; not directly comparable to full-band SNR"
+                  title="Signal vs noise floor within occupied bandwidth; peak spectral clearance."
                 />
               </div>
 
               <div className="flex items-center space-x-2">
                 <span className="text-base font-mono font-extrabold text-[#F5A623]">
-                  {rf.snr_db !== undefined ? `${rf.snr_db.toFixed(1)} dB` : '-- dB'}
+                  {rf.snr_db !== undefined && rf.snr_db !== null ? `${rf.snr_db.toFixed(1)} dB` : '-- dB'}
                 </span>
                 <span className="w-2 h-2 rounded-full bg-[#F5A623]" />
+              </div>
+            </div>
+
+            {/* Secondary: SNR (EST. FULL-BAND) */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-1.5 group cursor-help shrink-0">
+                <span
+                  className="text-xs font-mono font-bold text-[#8E8E93] uppercase underline decoration-dotted decoration-[#8E8E93]/60"
+                  title="Estimated total signal-to-noise ratio across entire sampling bandwidth: SNR(in-band) - 10*log10(fs/B). Meaningful only below ~15 dB in-band SNR (i.e. for signals that are actually noisy). Above ~15 dB in-band SNR, unshaped pulse sidelobes mask the noise floor (-9 to -12 dB error at 20 dB SNR, while accurate to ~1 dB at 0 dB SNR), so it reads as 'high/clean, exact value not meaningful' rather than a misleading precise number."
+                >
+                  SNR (EST. FULL-BAND)
+                </span>
+                <HelpCircle
+                  className="w-3.5 h-3.5 text-[#8E8E93]/60 group-hover:text-[#F5A623] transition-colors"
+                  title="Estimated total signal-to-noise ratio across entire sampling bandwidth: SNR(in-band) - 10*log10(fs/B). Meaningful only below ~15 dB in-band SNR (i.e. for signals that are actually noisy). Above ~15 dB in-band SNR, unshaped pulse sidelobes mask the noise floor (-9 to -12 dB error at 20 dB SNR, while accurate to ~1 dB at 0 dB SNR), so it reads as 'high/clean, exact value not meaningful' rather than a misleading precise number."
+                />
+              </div>
+
+              <div className="flex items-center justify-end text-right ml-2">
+                {isNoisySignal ? (
+                  <span className="text-base font-mono font-extrabold text-[#8E8E93]">
+                    {fullBandDisplay}
+                  </span>
+                ) : (
+                  <span
+                    className="text-[11px] font-mono font-medium text-[#8E8E93]/80 text-right leading-tight"
+                    title="Exact value not meaningful above ~15 dB in-band SNR due to pulse sidelobes masking noise floor"
+                  >
+                    {fullBandDisplay}
+                  </span>
+                )}
               </div>
             </div>
           </div>
