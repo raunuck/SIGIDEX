@@ -1,4 +1,4 @@
-# BandsmithV2
+# Sigdex
 
 Automated system for ingesting `.wav` and `.IQ` radio-signal recordings, extracting RF parameters, classifying modulation, and generating diagnostic reports.
 
